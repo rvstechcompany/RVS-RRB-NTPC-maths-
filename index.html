@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RVS RRB NTPC Maths</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background-color: #f4f6f8;
+        }
+        header {
+            background-color: #0a3d62;
+            color: white;
+            padding: 15px 20px;
+            text-align: center;
+        }
+        nav {
+            background-color: #3c40c6;
+            display: flex;
+            justify-content: center;
+        }
+        nav a {
+            color: white;
+            padding: 14px 20px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        nav a:hover {
+            background-color: #1e3799;
+        }
+        section {
+            padding: 20px;
+            max-width: 1000px;
+            margin: auto;
+        }
+        h2, h3 {
+            color: #0a3d62;
+        }
+        .pdf-list, .books-list, .practice-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .pdf-list li, .books-list li, .practice-list li {
+            background-color: #fff;
+            margin: 8px 0;
+            padding: 10px;
+            border-radius: 6px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        footer {
+            background-color: #0a3d62;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+            margin-top: 20px;
+        }
+        input, textarea {
+            padding: 8px;
+            width: 100%;
+            margin: 6px 0 12px 0;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+        button {
+            background-color: #3c40c6;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #1e3799;
+        }
+        #adminPanel {
+            background-color: #dff9fb;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>RVS RRB NTPC Maths</h1>
+    <p>Educational Website for Railway Exam Preparation</p>
+</header>
+
+<nav>
+    <a href="#home">Home</a>
+    <a href="#pdfs">PDFs</a>
+    <a href="#practice">Practice</a>
+    <a href="#books">Books</a>
+    <a href="#contact">Contact</a>
+</nav>
+
+<section id="home">
+    <h2>Welcome to RVS RRB NTPC Maths</h2>
+    <p>This website provides study materials, previous year question papers, practice sets, and reference books for RRB NTPC exam preparation.</p>
+</section>
+
+<!-- Student Login / Signup -->
+<section id="login">
+    <h2>Student Login / Signup</h2>
+    <div>
+        <input type="text" id="mobile" placeholder="Mobile Number" required>
+        <input type="password" id="password" placeholder="Password" required>
+        <button onclick="studentLogin()">Login</button>
+        <button onclick="studentSignup()">Signup</button>
+    </div>
+</section>
+
+<!-- Admin Login -->
+<section id="adminLogin">
+    <h2>Admin Login</h2>
+    <input type="text" id="adminUser" placeholder="Admin Username">
+    <input type="password" id="adminPass" placeholder="Admin Password">
+    <button onclick="adminLogin()">Login</button>
+</section>
+
+<!-- Admin Panel -->
+<div id="adminPanel" style="display:none;">
+    <h3>Admin Panel</h3>
+    <input type="text" id="newPDF" placeholder="New PDF Name / Link">
+    <button onclick="addPDF()">Add PDF</button><br>
+    <input type="text" id="newPractice" placeholder="New Practice Question">
+    <button onclick="addPractice()">Add Practice</button><br>
+    <input type="text" id="newBook" placeholder="New Book Name / Link">
+    <button onclick="addBook()">Add Book</button>
+</div>
+
+<section id="pdfs">
+    <h2>PDFs</h2>
+    <ul class="pdf-list"></ul>
+</section>
+
+<section id="practice">
+    <h2>Practice Questions</h2>
+    <ul class="practice-list"></ul>
+</section>
+
+<section id="books">
+    <h2>Books</h2>
+    <ul class="books-list"></ul>
+</section>
+
+<section id="contact">
+    <h2>Contact Us</h2>
+    <form>
+        <label>Name:</label>
+        <input type="text" placeholder="Your Name" required>
+        <label>Email:</label>
+        <input type="email" placeholder="Your Email" required>
+        <label>Message:</label>
+        <textarea placeholder="Your Message" rows="5" required></textarea>
+        <button type="submit">Send</button>
+    </form>
+</section>
+
+<footer>
+    &copy; 2025 RVS RRB NTPC Maths. All Rights Reserved.
+</footer>
+
+<script>
+// Student Signup
+function studentSignup() {
+    let mobile = document.getElementById("mobile").value;
+    let password = document.getElementById("password").value;
+    if(!mobile || !password){
+        alert("Please enter both fields");
+        return;
+    }
+    let users = JSON.parse(localStorage.getItem("students")) || [];
+    if(users.find(u => u.mobile === mobile)){
+        alert("User already exists. Please login.");
+        return;
+    }
+    users.push({mobile, password});
+    localStorage.setItem("students", JSON.stringify(users));
+    alert("Signup successful! Now login.");
+}
+
+// Student Login
+function studentLogin() {
+    let mobile = document.getElementById("mobile").value;
+    let password = document.getElementById("password").value;
+    let users = JSON.parse(localStorage.getItem("students")) || [];
+    let user = users.find(u => u.mobile === mobile && u.password === password);
+    if(user){
+        alert("Login successful!");
+        document.getElementById("pdfs").style.display = "block";
+        document.getElementById("practice").style.display = "block";
+        document.getElementById("books").style.display = "block";
+    } else {
+        alert("Invalid credentials!");
+    }
+}
+
+// Admin Login
+function adminLogin() {
+    let username = document.getElementById("adminUser").value;
+    let password = document.getElementById("adminPass").value;
+    if(username === "admin" && password === "admin123"){
+        alert("Admin login successful!");
+        document.getElementById("adminPanel").style.display = "block";
+    } else {
+        alert("Invalid admin credentials!");
+    }
+}
+
+// Add PDF
+function addPDF() {
+    let pdf = document.getElementById("newPDF").value;
+    if(!pdf) return;
+    let pdfs = JSON.parse(localStorage.getItem("pdfs")) || [];
+    pdfs.push(pdf);
+    localStorage.setItem("pdfs", JSON.stringify(pdfs));
+    alert("PDF added!");
+    loadPDFs();
+}
+
+// Add Practice
+function addPractice() {
+    let pq = document.getElementById("newPractice").value;
+    if(!pq) return;
+    let practice = JSON.parse(localStorage.getItem("practice")) || [];
+    practice.push(pq);
+    localStorage.setItem("practice", JSON.stringify(practice));
+    alert("Practice question added!");
+    loadPractice();
+}
+
+// Add Book
+function addBook() {
+    let book = document.getElementById("newBook").value;
+    if(!book) return;
+    let books = JSON.parse(localStorage.getItem("books")) || [];
+    books.push(book);
+    localStorage.setItem("books", JSON.stringify(books));
+    alert("Book added!");
+    loadBooks();
+}
+
+// Load PDFs
+function loadPDFs() {
+    let pdfs = JSON.parse(localStorage.getItem("pdfs")) || [];
+    let list = document.querySelector(".pdf-list");
+    list.innerHTML = "";
+    pdfs.forEach(p => {
+        let li = document.createElement("li");
+        li.textContent = p;
+        list.appendChild(li);
+    });
+}
+
+// Load Practice
+function loadPractice() {
+    let practice = JSON.parse(localStorage.getItem("practice")) || [];
+    let list = document.querySelector(".practice-list");
+    list.innerHTML = "";
+    practice.forEach(q => {
+        let li = document.createElement("li");
+        li.textContent = q;
+        list.appendChild(li);
+    });
+}
+
+// Load Books
+function loadBooks() {
+    let books = JSON.parse(localStorage.getItem("books")) || [];
+    let list = document.querySelector(".books-list");
+    list.innerHTML = "";
+    books.forEach(b => {
+        let li = document.createElement("li");
+        li.textContent = b;
+        list.appendChild(li);
+    });
+}
+
+// Initial load
+window.onload = function(){
+    loadPDFs();
+    loadPractice();
+    loadBooks();
+    document.getElementById("pdfs").style.display = "none";
+    document.getElementById("practice").style.display = "none";
+    document.getElementById("books").style.display = "none";
+}
+</script>
+
+</body>
+</html>
